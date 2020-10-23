@@ -1,0 +1,5 @@
+.idea
+env
+[a-q]*.txt
+[s-z]*.txt
+*.bat
