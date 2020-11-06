@@ -52,16 +52,6 @@ def find_url_of_book_category():
             category = extract_url_category.text.replace("\n", "").strip()
             url_book_category_list[-1].append(category)
 
-
-    with open("url_book_category_list.html", "w", encoding="UTF-8") as open_file:
-        open_file.write(str(url_book_category_list))
-
-    # For this present release of code, this function return a specific url (link to a category)
-    url_book_category_list = []
-    url_book_category_list.append([])
-    url_book_category_list[-1].append('http://books.toscrape.com/catalogue/category/books/mystery_3/index.html')
-    url_book_category_list[-1].append('Mystery')
-
     return url_book_category_list
 
 
@@ -90,13 +80,8 @@ def find_url_book(url, url_book_list = []):
             # print("\n\tfind_url_book :\t" + str(ul.get('class')))
             ul_get_class = ul.get('class')
             if not(ul_get_class == None) and "pager" in ul_get_class :
-                print("\n\n\t" + str(ul) + "\n")
-                
                 find_all_li = ul.findAll('li')
-                print("find_all_li :\t" + str(find_all_li) + "\n\n")
                 for li in find_all_li:
-                    print("li in find_all_li :\t" + str(li) + "\n\n")
-                    print("li.get('class') :\t" + str(li.get('class')))
                     if li.get('class')[0] == "next":
                         extract_next_page = li.find('a')['href']
 
@@ -107,15 +92,9 @@ def find_url_book(url, url_book_list = []):
                                 break
                         url_start = url[0:url_start_end]
                         extract_next_page = url_start + extract_next_page
-                        print("extract_next_page :\t" + extract_next_page)
                         url_book_list = find_url_book(extract_next_page, url_book_list)
 
     return url_book_list
-
-
-def find_url_book_utility(url):
-    ''' For this book category, retrieve all the url of all this king of book, in this url
-    '''
 
 
 def HTTP_of_url(url):
