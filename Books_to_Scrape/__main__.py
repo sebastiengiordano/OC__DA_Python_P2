@@ -85,22 +85,30 @@ def find_url_book(url, url_book_list = []):
         # url of the next page is inside 'ul' tag with attribute 'pager'
         find_all_ul = soup.findAll('ul')
         for ul in find_all_ul:
-            print("\n\tfind_url_book :\t" + str(type(ul.get('class'))))
-            print("\n\tfind_url_book :\t" + str(ul.get('class')))
-            if "pager" in ul.get('class') :
+            # print("\n\tfind_url_book :\t" + str(type(ul.get('class'))) +
+            # "\tnot(ul.get('class') == None) =>" + str(not(ul.get('class') == None)))
+            # print("\n\tfind_url_book :\t" + str(ul.get('class')))
+            ul_get_class = ul.get('class')
+            if not(ul_get_class == None) and "pager" in ul_get_class :
                 print("\n\n\t" + str(ul) + "\n")
-                # extract_next_page = ul.find('li', class="next").find('a')['href']
+                
+                find_all_li = ul.findAll('li')
+                print("find_all_li :\t" + str(find_all_li) + "\n\n")
+                for li in find_all_li:
+                    print("li in find_all_li :\t" + str(li) + "\n\n")
+                    print("li.get('class') :\t" + str(li.get('class')))
+                    if li.get('class')[0] == "next":
+                        extract_next_page = li.find('a')['href']
 
-                for url_next_page in extract_next_page:
-                    # url need to be complete with the beginning of the current page
-                    for i in range(-1, -20, -1):
-                        if url[i] == "/":
-                            url_start_end = i + 1
-                            break
-                    url_start = url[0:url_start_end]
-                    url_next_page = url_start + url_next_page
-                    print(url_next_page)
-                    url_book_list = find_url_book(url_next_page, url_book_list)
+                        # url need to be complete with the beginning of the current page
+                        for i in range(-1, -20, -1):
+                            if url[i] == "/":
+                                url_start_end = i + 1
+                                break
+                        url_start = url[0:url_start_end]
+                        extract_next_page = url_start + extract_next_page
+                        print("extract_next_page :\t" + extract_next_page)
+                        url_book_list = find_url_book(extract_next_page, url_book_list)
 
     return url_book_list
 
