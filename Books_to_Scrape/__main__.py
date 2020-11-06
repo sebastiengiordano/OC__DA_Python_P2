@@ -70,11 +70,20 @@ def find_url_book(url, url_book_list = []):
         for extract_h3 in extract_all_h3:
             url_book = "http://books.toscrape.com/catalogue/" + extract_h3.find('a')['href'].replace("../", "")
             url_book_list.append(url_book)
+            # print('\n in find_url_book\turl_book_list:' + str(url_book_list))
 
         # If there is another page of books for this category, the url of the next page is find.
         # url of the next page is inside 'ul' tag with attribute 'pager'
         find_all_ul = soup.findAll('ul')
+        count=0
         for ul in find_all_ul:
+            count += 1
+            if count < 5:
+                with open("find_all_ul_" + str(count), "w", encoding="UTF-8") as open_file:
+                    open_file.write(str(ul) + "\n")
+
+            print(str(ul.get(class="Next")))
+
             # print("\n\tfind_url_book :\t" + str(type(ul.get('class'))) +
             # "\tnot(ul.get('class') == None) =>" + str(not(ul.get('class') == None)))
             # print("\n\tfind_url_book :\t" + str(ul.get('class')))
@@ -211,13 +220,18 @@ def main():
                 For each book, retrieve the data listed in "list_item_produit".
                 Then, these data are saved in a .csv file (one file by book category)
     '''
-
+    count = 0
+    count2 = 0
     # from the Books_to_Srape homepage site, retrieve all the url for each book category.
     url_book_category = find_url_of_book_category()
 
     # For each book category, retrieve all the url for all this king of book.
     for url, category in url_book_category:
-        url_of_this_category = find_url_book(url)
+        print("\nurl, category in url_book_category:\t" + url + "\t" + category)
+        count += 1
+        if count > 2:
+            break
+        url_of_this_category = find_url_book(url, [])
 
         data_list = []
         # Add of header for .csv file
@@ -226,13 +240,18 @@ def main():
         for url_book in url_of_this_category:
             # For each book, retrieve the data listed in "list_item_produit".
             data_dict = retrieve_data_listed_in_item_produit(url_book, category)
+            count2 += 1
+            if count2 > 5:
+                count2 = 0
+                break
+            # print("\ndata_dict = {}:\t" + str(data_dict) + "\t" + str(data_list))
 
             data_list.append([])
             for element in list_item_produit:
                 data_list[-1].append(data_dict[element])
 
-            # Then, these data are saved in a .csv file (one file by book category)
-            write_list_in_file(data_list, "..\\CSV\\" + category + ".csv")
+        # Then, these data are saved in a .csv file (one file by book category)
+        write_list_in_file(data_list, "..\\CSV\\" + category + ".csv")
 
 
 if __name__ == "__main__":
