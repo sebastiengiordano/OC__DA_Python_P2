@@ -1,13 +1,5 @@
-.gitignore
-.idea
+.idea/
 env
-[a-q]*.txt
-[s-z]*.txt
-*.bat
-*.html
-tuto.py
 *.csv
-Books_to_Scrape_test.py
-Books_to_Scrape_url_books
-Books_to_Scrape_url_books.py
+*.jpg
 Books_to_Scrape/__pycache__/*
