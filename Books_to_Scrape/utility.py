@@ -15,19 +15,22 @@ project_path = path.dirname(path.abspath(__file__))
 # Functions #
 #############
 def find_url_of_book_category():
-    ''' From the Books_to_Srape homepage site, retrieve all the url for each book category.
+    ''' From the Books_to_Srape homepage site,
+        find all the url for each book category.
     '''
 
     url_book_category_list = []
 
-    url_home_page ="http://books.toscrape.com/"
+    url_home_page = "http://books.toscrape.com/"
     soup, status_code = HTTP_of_url(url_home_page)
 
     url_book_category_tag = soup.findAll('a', href=True)
 
     for extract_url_category in url_book_category_tag:
         url = extract_url_category['href']
-        if url[0:len("catalogue/category/books/")] == "catalogue/category/books/":
+        if (
+                url[0:len("catalogue/category/books/")]
+                == "catalogue/category/books/"):
             url_book_category_list.append([])
             url_book_category_list[-1].append(url_home_page + url)
 
@@ -37,8 +40,9 @@ def find_url_of_book_category():
     return url_book_category_list
 
 
-def find_url_book(url, url_book_list = []):
-    ''' For this book category, retrieve all the url of all this king of book
+def find_url_book(url, url_book_list):
+    ''' For this book category,
+        find all the url of all this king of book.
     '''
 
     response = requests.get(url)
@@ -50,29 +54,34 @@ def find_url_book(url, url_book_list = []):
 
         # Find all the url of the books in this page
         for extract_h3 in extract_all_h3:
-            url_book = "http://books.toscrape.com/catalogue/" + extract_h3.find('a')['href'].replace("../", "")
+            url_book =   \
+                "http://books.toscrape.com/catalogue/"  \
+                + extract_h3.find('a')['href'].replace("../", "")
             url_book_list.append(url_book)
 
-        # If there is another page of books for this category, the url of the next page is find.
-        # url of the next page is inside 'ul' tag with attribute 'pager'
+        # If there is another page of books for this category,
+        # the url of the next page is find.
+        # url of the next page is inside 'ul' tag with attribute 'pager'.
         find_all_ul = soup.findAll('ul')
-        count=0
         for ul in find_all_ul:
             ul_get_class = ul.get('class')
-            if not(ul_get_class == None) and "pager" in ul_get_class :
+            if (ul_get_class is not None) and ("pager" in ul_get_class):
                 find_all_li = ul.findAll('li')
                 for li in find_all_li:
                     if li.get('class')[0] == "next":
                         extract_next_page = li.find('a')['href']
 
-                        # url need to be complete with the beginning of the current page
+                        # url need to be complete with
+                        # the beginning of the current page.
                         for i in range(-1, -20, -1):
                             if url[i] == "/":
                                 url_start_end = i + 1
                                 break
                         url_start = url[0:url_start_end]
                         extract_next_page = url_start + extract_next_page
-                        url_book_list = find_url_book(extract_next_page, url_book_list)
+                        url_book_list = find_url_book(
+                                                extract_next_page,
+                                                url_book_list)
 
     return url_book_list
 
@@ -98,7 +107,9 @@ def HTTP_of_url(url):
 
 def BeautifulSoup_extract(tag, html_data):
     ''' Extract all the data include inside 'tag' in a BeautifulSoup object.
-        For each tag find, the data is append in a list which is return by this function.
+
+        For each tag find, the data is append in a list
+        which is return by this function.
     '''
 
     extract_all_tags = html_data.findAll(tag)
@@ -115,9 +126,11 @@ def write_list_in_file(list_to_save, file):
 
     file_path = path.join(project_path, file)
 
-    with open(file_path, "w", encoding="UTF-8") as csvfile:
-        spamwriter = csv.writer(csvfile, delimiter=';',
-                    quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    with open(file_path, "w", encoding="UTF-8", newline='') as csvfile:
+        spamwriter = csv.writer(csvfile,
+                                delimiter=';',
+                                quotechar='"',
+                                quoting=csv.QUOTE_MINIMAL)
         for row in list_to_save:
             spamwriter.writerow(row)
 
@@ -125,11 +138,14 @@ def write_list_in_file(list_to_save, file):
         #     open_file.write(";".join(list_to_save[element_number]) + "\n")
 
 
-def retrieve_data_listed_in_item_produit(url_book, category, status_code_nok_counter = 0):
-    ''' This function retrieve the data listed in "list_item_produit" from the url_book
-        and send this data in a dictionary.
-        In case of trouble, the Dict_item_produit is only filled with the url_book,
-        the others fields are set with "0" by default.
+def find_data_listed_in_item_produit(
+        url_book,
+        category,
+        status_code_nok_counter=0):
+    ''' This function find the data listed in "list_item_produit"
+        from the url_book and send this data in a dictionary.
+        In case of trouble, the Dict_item_produit is only filled
+        with the url_book, the others fields are set with "0" by default.
     '''
 
     # Dictionary of items to recover
@@ -159,8 +175,10 @@ def retrieve_data_listed_in_item_produit(url_book, category, status_code_nok_cou
         Dict_item_produit["universal_product_code(upc)"] = data_list[0]
         Dict_item_produit["price_excluding_tax"] = data_list[2]
         Dict_item_produit["price_including_tax"] = data_list[3]
-        # "number_available" have the following format "In stock (x available)", so we extract the value.
-        # Before, we check that the data are in the good format
+
+        # "number_available" have the following format
+        # "In stock (x available)", so we extract the value.
+        # Before, we check that the data are in the good format.
         number_available = ""
         if len(data_list[5]) > len("In stock ( available)"):
             if data_list[5][0:len("In stock")] == "In stock":
@@ -170,35 +188,34 @@ def retrieve_data_listed_in_item_produit(url_book, category, status_code_nok_cou
                         number_available += data_list[5][index]
                     else:
                         break
+
         Dict_item_produit["number_available"] = number_available
         Dict_item_produit["review_rating"] = data_list[6]
 
-
-        # "product_description" is contain in twice position, here we take the one in tag 'meta' with the attribute
-        # name = "description". The description is in the attribute "content".
+        # "product_description" is contain in twice position,
+        # here we take the one in tag 'meta' with the attribute
+        # name = "description".
+        # The description is in the attribute "content".
         extract_all_meta = soup.findAll('meta')
         for extract_meta in extract_all_meta:
             if extract_meta.get('name') == "description":
                 product_description = extract_meta['content'].strip()
-                # product_description = extract_meta['content'].replace("\n", "").replace("\t", "")
-                # product_description = product_description.strip()
                 Dict_item_produit["product_description"] = product_description
-                # Dict_item_produit["product_description"] = "\"" + product_description + "\"" 
                 break
 
-
-        # "title" and "image_url" are contain in the tag 'img' (which is inside the tag 'article').
+        # "title" and "image_url" are contain in the tag 'img'
+        # (which is inside the tag 'article').
         extract_title = soup.find('article').find('img')
 
         Dict_item_produit["title"] = extract_title['alt']
-        Dict_item_produit["image_url"] = "http://books.toscrape.com/" + extract_title['src'].replace("../", "")
+        Dict_item_produit["image_url"] = "http://books.toscrape.com/"   \
+            + extract_title['src'].replace("../", "")
 
     else:
         status_code_nok_counter += 1
         if status_code_nok_counter > 10:
             print("For " + url_book + "requests never OK.")
-        retrieve_data_listed_in_item_produit(url_book, status_code_nok_counter)
-
+        find_data_listed_in_item_produit(url_book, status_code_nok_counter)
 
     return Dict_item_produit
 
@@ -207,6 +224,9 @@ def copy_picture(url_picture, picture_path, picture_name):
     ''' This function copy the picture from its url (url_picture)
         to the folder "picture_path" with the name "picture_name".
     '''
+
+    if len(picture_name) > 120:
+        picture_name = picture_name[0:70] + " ... " + picture_name[-40:]
 
     picture_path = path.join(project_path, picture_path, picture_name)
     urllib.request.urlretrieve(url_picture, picture_path)
