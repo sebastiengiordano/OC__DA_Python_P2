@@ -56,9 +56,8 @@ def main():
             + f"\tat {int(time.time() - processing_time)}s")
         # DEBUG_MODE: Uncomment the lines below in order to take
         # only specific category of book.
-        # if category in ["Travel",
-        #                 "Mystery",
-        #                 "Historical Fiction"
+        # if category in ["Childrens",
+        #                 "Default"
         #                 ]:
         #     pass
         # else:
@@ -92,11 +91,9 @@ def main():
             # And the picture of the book is stored in a folder
             # named with the category name.
             title = data_dict["title"].replace(": ", "_").replace(":", "_")
-            title = title.replace("/", "_")
-            title = title.replace("'", " ")
-            title = title.replace("\"", "")
-            title = title.replace("*", "")
-            title = title.replace("?", "")
+            title = title.replace("/", "_").replace("\"", "")
+            title = title.replace("'", " ").replace("’", "").replace("’", "")
+            title = title.replace("*", "").replace("?", "").replace("“", "")
             copy_picture(
                     data_dict["image_url"],
                     path.join(project_path, "..\\Picture", category + "\\"),
