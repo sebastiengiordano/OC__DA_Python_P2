@@ -1,11 +1,11 @@
 <p align="center">
     <br />
-    <h3 align="center">WebScrapping of Books to Scrape site</h3>
+    <h1 align="center">WebScrapping of Books to Scrape site</h1>
     <br />
-    <p align="center">
+    <h2 align="center">
         This program aims to track book prices at "Books to Scrape" site.
         <br />
-    </p>
+    </h2>
 </p>
 
 
@@ -19,6 +19,7 @@
   * [Additional informations](#additional-informations)
 * [Folder structure](#folder-structure)
   * [Folder CSV](#folder-csv)
+    * [Open CSV with Excel](#open-csv-with-excel)
   * [Folder Picture](#folder-picture)
 
 
@@ -95,6 +96,21 @@ These files are named with the category name and contain, for each book, the fol
 * category
 * review_rating
 * image_url
+
+#### Open CSV with Excel
+Follow the steps below to use Microsoft Excel to open these csv file:
+* Open Microsoft Excel
+* Click on the "Data" menu.
+* Click on the "From Text" icon
+* Navigate to the location of the file that you want to import
+    * Click on the filename and then click on the Import button
+* The Text Import Wizard - Step 1/3
+    * Choose "Delimited" field
+    * Choose 65001: Unicode (UTF-8) from the drop-down list "File origin"
+* Click on the Next button to display the Text Import Wizard - Step 2/3
+    * In "Delimiters", check the box corresponding to the semicolon
+    * In "Text qualifier", choose the quotation mark
+* Click on the Finish button
 
 ### Folder Picture
 In the folder Picture, you retreive one folder by category of book.

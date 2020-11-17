@@ -53,7 +53,7 @@ def main():
         print(f"Category: {category}" + " "*(20 - len(category))
             + f" ({(url_book_category.index([url, category]) + 1):2}"
             + f" / {len(url_book_category)})"
-            + f"\tat {int(time.time() - processing_time)}s")
+            + f"\tat {int(time.time() - processing_time):3}s")
         # DEBUG_MODE: Uncomment the lines below in order to take
         # only specific category of book.
         # if category in ["Childrens",
